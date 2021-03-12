@@ -1,3 +1,4 @@
+
 ![BrightCoders Logo](img/logo-bc.png)
 
 # Kata El Juego de la Vida
