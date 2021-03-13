@@ -17,8 +17,7 @@
   },
   "homepage": "https://github.com/BC-MAR-21-RN/kata-01-el-juego-de-la-vida-final-equipo05#readme",
   "devDependencies": {
-    "eslint": "^7.21.0",
+    "eslint": "^7.22.0",
     "jest": "^26.6.3"
   }
-
-    }
+}

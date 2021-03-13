@@ -4,12 +4,11 @@ class World {
   constructor(row, column) {
     this.row = row
     this.column = column
-    this.board = new Array(this.row);
-    this.newBoard = []
+    this.board = Array(this.row).fill().map(() => Array(this.column).fill(0))
+    this.newBoard = Array(this.row).fill().map(() => Array(this.column).fill(0))
   }
 
   fillBoard() {
-    for (let column = 0; column < this.column; column++) this.board[column] = new Array(this.column)
     for (let row = 0; row < this.row; row++) {
       for (let column = 0; column < this.column; column++) {
         this.board[row][column] = new Cell(Math.floor(Math.random() * 2))
@@ -19,28 +18,65 @@ class World {
     return this.board;
   }
 
-  neigthbors(rowCell, columnCell) {
-    let neighbors;
-    for (let x = 0; x < col; x++) {
-      for (let y = 0; y < row; y++) {
-
-        matrix[x][y]
-
-        neighbors += matrix[(x) % this.row, (y - 1) % this.column]
-        neighbors += matrix[(x) % row][(y - 1) % col]
-        neighbors += matrix[(x + 1) % row, (y - 1) % col]
-        neighbors += matrix[(x + 1) % row, (y) % col]
-        neighbors += matrix[(x + 1) % row][(y + 1) % col]
-        neighbors += matrix[(x) % row][(y + 1) % col]
-        neighbors += matrix[(x - 1) % row][(y + 1) % col]
-        neighbors += matrix[(x - 1) % row][(y) % col]
-        neighbors += matrix[(x - 1) % row][(y - 1) % col];
-
-      }
-
-      return neigthbors;
-    }
+  getBoard() {
+    this.board.forEach((row) => {
+      let cellState = ""
+      row.forEach((column) => cellState += `${column.cellTransform()}`)
+      console.log(cellState)
+    })
   }
+
+  getNeigthbors(rowCell, columnCell) {
+    let totalNeighbors = 0;
+    let positionNeighbors = [
+      [rowCell, columnCell - 1],
+      [rowCell + 1, columnCell - 1],
+      [rowCell + 1, columnCell],
+      [rowCell + 1, columnCell + 1],
+      [rowCell, columnCell + 1],
+      [rowCell - 1, columnCell + 1],
+      [rowCell - 1, columnCell],
+      [rowCell - 1, columnCell - 1]
+    ]
+
+    for (let row = 0; row < positionNeighbors.length; row++) {
+      let rowPosition = positionNeighbors[row][0];
+      let columnPosition = positionNeighbors[row][1];
+      if (rowPosition >= 0 && columnPosition >= 0 && rowPosition < this.row && columnPosition < this.column) {
+        totalNeighbors += this.board[rowPosition][columnPosition].state;
+      }
+    }
+
+    return totalNeighbors;
+  }
+
+  rules(rowCell, columnCell) {
+    let totalNeighbors = this.getNeigthbors(rowCell, columnCell)
+    let newState = this.board[rowCell][columnCell].state
+
+    if (this.board[rowCell][columnCell].state) {
+      if (totalNeighbors < 2) newState = 0
+      else if (totalNeighbors > 3) newState = 0
+      else if (totalNeighbors == 2 || totalNeighbors == 3) newState = 1
+    } else {
+      if (totalNeighbors == 3) newState = 1
+    }
+
+    this.newBoard[rowCell][columnCell] = newState
+
+    return newState
+  }
+
+  newStateOriginalBoard() {
+    for (let row = 0; row < this.row; row++) {
+      for (let column = 0; column < this.column; column++) {
+        this.board[row][column].state = this.newBoard[row][column]
+      }
+    }
+
+    return this.board
+  }
+
 }
 
 module.exports = World
